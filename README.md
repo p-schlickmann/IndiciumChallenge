@@ -1,6 +1,6 @@
 # Indicium Challenge
 ## Como visualizar os dados
-Para facilitar, subi uma [página](https://) no github para visualização.  
+Para facilitar, subi uma [página](https://indiciumchallenge.herokuapp.com/?) na web para visualização
 Mas caso seja necessário rodar na sua própria máquina as instruções são essas:  
 1. Instalar o Python  
 2. Clonar este repositório
