@@ -1,9 +1,9 @@
-import operator
-from collections import defaultdict
-from datetime import datetime
 from flask import Flask, render_template
+from markdown2 import markdown
 
-from conn import DatabaseConnection
+from functions.data_processors import per_date, per_contact, per_sector, errors
+from functions.graph_builder import create_plot
+
 
 app = Flask(__name__)
 
@@ -13,89 +13,57 @@ def home():
     return render_template('index.html')
 
 
-def get_amount():
-    per_contact()
-    per_date()
+@app.route('/output_1/')
+def first_output_home():
+    return render_template('first.html')
 
 
-def per_contact():
-    with DatabaseConnection('./parser/data.db') as cursor:
-        content = cursor.execute(
-            "SELECT dealsPrice, contactsName FROM deals INNER JOIN contacts ON deals.contactsId = contacts.contactsId")
-        contacts = content.fetchall()
+@app.route('/output_1/contact/')
+def first_output_contact():
+    contacts = per_contact()
+    names =[]
+    values = []
+    for value, name in contacts:
+        names.append(name)
+        values.append(value)
+    contact_bar = create_plot(names, values, "Valor total vendido por contato")
 
-    data = group_data(contacts)
-    print(data)
-
-
-def per_date():
-    with DatabaseConnection('./parser/data.db') as cursor:
-        content = cursor.execute("SELECT dealsDateCreated,dealsPrice FROM deals")
-        deals = content.fetchall()
-
-    date_formated = remove_day(deals)
-    data = group_data(date_formated)
-
-    per_sector(data)
+    return render_template('specific.html', contacts=contact_bar)
 
 
-def per_sector(deals_per_month):
-    with DatabaseConnection('./parser/data.db') as cursor:
-        content = cursor.execute(
-            "SELECT dealsDateCreated, dealsPrice, sectorKey FROM deals INNER JOIN companies ON deals.companiesId = companies.companiesId")
-        deals = content.fetchall()
-    with DatabaseConnection('./parser/data.db') as cursor:
-        content = cursor.execute("SELECT sectorKey, sector FROM sectors")
-        sectors = content.fetchall()
-
-    date_formated = remove_day(deals)
-    sums = defaultdict(int)
-    for amount, date, sectorKey in date_formated:
-        amount_number = int(amount)
-        key = f'{date}#{sectorKey}'
-        sums[key] += amount_number
-
-    another_list = []
-    for sectorKey, sector in sectors:
-        for key, value in sums.items():
-            date, formated_key = key.split('#')
-            if formated_key == sectorKey:
-                another_list.append((sector, sectorKey, value, date))
-
-    final = []
-    for name, key, value, month in another_list:
-        total = int(deals_per_month[month])
-        sector_pct = (100 * value / total) / 100
-        formated_pct = "{:.2f}".format(sector_pct)
-        final.append((int(key), name, formated_pct, month))
-
-    final.sort(key=operator.itemgetter(0))  # index da sectorKey
-    final.sort(key=lambda index: datetime.strptime(index[3], '%m/%Y'))
-
-    for element in final:
-        pass
+@app.route('/output_1/month/')
+def first_output_month():
+    date = per_date()
+    months = []
+    values = []
+    for value, month in date:
+        months.append(month)
+        values.append(value)
+    month_bar = create_plot(months, values, 'Valor total vendido por mês')
+    return render_template('specific.html', contacts=month_bar)
 
 
-def group_data(data):
-    sums = defaultdict(int)
-
-    for amount, in_common_element, *other_info in data:
-        amount_number = int(amount)
-        sums[in_common_element] += amount_number
-
-    return sums
+@app.route('/output_2/')
+def second_output():
+    sectors = per_sector()
+    previous_month = ['']
+    return render_template('second.html', sectors=sectors, previous_month=previous_month)
 
 
-def remove_day(content):
-    content_formated = []
-    for date, amount, *other_info in content:
-        _ = datetime.strptime(date, "%m/%d/%Y")
-        new_date = _.strftime("%m/%Y")
-        formated = [amount, new_date, *other_info]
-        content_formated.append(tuple(formated))
-    return content_formated
+@app.route('/readme/')
+def show_readme():
+    with open('templates/custom.md', 'r', encoding='utf-8') as f:
+        content = f.read()
+        content_converted = markdown(content)
+    return render_template('readme.html', content=content_converted)
+
+
+@app.route('/errors/')
+def get_errors():
+    error = errors()
+    return render_template('error.html', erros=error)
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
 

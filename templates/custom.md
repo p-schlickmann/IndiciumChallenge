@@ -1,15 +1,3 @@
-# Indicium Challenge
-## Como visualizar os dados
-Para facilitar, subi uma [página](https://) no github para visualização.  
-Mas caso seja necessário rodar na sua própria máquina as instruções são essas:  
-1. Instalar o Python  
-2. Clonar este repositório
-3. Abra o **terminal** (MacOS, Linux) ou **cmd** (Windows), navegue até o diretório que se encontra o arquivo **app.py** e instale as bibliotecas especificadas no arquivo [requirements.txt](https://github.com/p-schlickmann/IndiciumChallenge/blob/master/requirements.txt), manualmente ou com o comando:  
-` pip install -r requirements.txt`   
-4. Rodar o arquivo **tsv_parser.py** uma única vez, para salvar os dados necessários na database que o programa principal utiliza: `python3 parser/tsv_parser.py`
-5. Agora use o comando `python3 app.py`  
-6. Agora é so acessar o seu localhost, normalmente em [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
-
 # Como eu fiz o desafio
 ## tsv_parser.py  
 Primeiramente eu desenvolvi um script que extrai as informações dos arquivos .tsv 

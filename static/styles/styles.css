@@ -1,3 +1,34 @@
-.display-3 {
+.display-3, .display-4 {
     margin: 10px;
+    margin-left: 5px ;
+}
+
+form{
+    display: inline;
+    margin: 10px;
+}
+
+body{
+    background-color: lightgrey;
+}
+
+.container{
+    margin-top: 50px;
+    text-align: center;
+}
+
+li {
+    margin-left: 20px;
+}
+
+#back_1, #back_2 {
+    margin:7px;
+}
+
+#readme {
+    margin: 20px;    
+}
+
+#bargraph {
+
 }

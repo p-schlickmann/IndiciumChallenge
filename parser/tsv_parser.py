@@ -30,7 +30,6 @@ class Parser:  # Caso seja necessário adquirir uma coluna específica, deve-se 
                 if title.startswith(
                         ' '):  # no caso de estar mal formatado, um espaço é adicionado no começo pelo utf-8, e isso quebra a aplicação, por isso é necessario remove-lo
                     title = title[1:]
-                    self.error_count += 1
 
                 contents = {'title': title, 'content': contents}
                 if self.error_index:
