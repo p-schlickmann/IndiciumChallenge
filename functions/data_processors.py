@@ -75,8 +75,8 @@ def per_sector():
 def errors():
     with DatabaseConnection('./parser/data.db') as cursor:
         content = cursor.execute("SELECT * FROM errors")
-        deals = content.fetchall()
-    return deals
+        errors = content.fetchall()
+    return errors
 
 
 def group_data(data):
