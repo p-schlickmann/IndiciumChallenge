@@ -40,7 +40,7 @@ class Parser:  # Caso seja necessário adquirir uma coluna específica, deve-se 
                 contents_list.append(contents)  # após todos os testes de erro, então é adicionado a lista principal
 
         self._extract_and_save(contents_list)
-        self.count_and_save_errors()
+        self._count_and_save_errors()
 
     def _extract_and_save(self, contents):
         print(f'[+] Extracting {self.file_path}')
@@ -65,12 +65,12 @@ class Parser:  # Caso seja necessário adquirir uma coluna específica, deve-se 
     def _insert_into_table(self, values_list):
         content_list = [value.get('content', None) for value in values_list]
         for insert_values in zip(*content_list):
-            if None in insert_values:
+            if None in insert_values:  # se tiver um valor None, nao adicionar a database
                 continue
             with DatabaseConnection('data.db') as cursor:
                 cursor.execute("INSERT INTO {} VALUES {}".format(self.table_name, insert_values))
 
-    def count_and_save_errors(self):
+    def _count_and_save_errors(self):
         with DatabaseConnection('data.db') as cursor:
             cursor.execute("CREATE TABLE IF NOT EXISTS errors (error_number int, table_name text)")
             cursor.execute("INSERT INTO errors VALUES (?, ?)", (self.error_count, self.table_name))
