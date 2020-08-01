@@ -22,6 +22,9 @@ O programa descarta linhas com erros de encoding ou com caracteres ilegíveis, t
 Entretanto, fiquei na dúvida como deveria contabilizar e descartar os erros, eu espereva um UnidecodeError que seria facilmente localizado e contabilizado, porém nenhum erro desse tipo aconteceu.  
 Um tempo depois descobri que havia umas caracteres estranhas como 'υφ' em alguns nomes, então os erros contablizados e colunas descartadas são as que continham essas caracteres.  
 
+## conn.py  
+Criei meu próprio Context Manager para acessar a database mais facilmente, ao chamar a classe DatabaseConnection a database é aberta, e fecha automaticamente ao sair do bloco. Como se fosse um '**with open('file.txt','r') as file**')
+
 ## data_processors.py
 Esse arquivo é responsavel pela filtragem e processamento da data fornecida. O método **JOIN** fornecido pela linguagem SQL e o **defaultdict** pelo próprio Python foram muito eficientes nisso.
 
